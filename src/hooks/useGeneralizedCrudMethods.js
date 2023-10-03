@@ -7,6 +7,7 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
   const [data, setData] = useState();
   const [error, setError] = useState();
   const [loadingStatus, setLoadingStatus] = useState("loading");
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!url || url.length === 0) {
     throw new Error(
@@ -26,9 +27,9 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
   async function getData(callbackDone) {
     try {
       setLoadingStatus(LOADING_STATES[0]);
-      const results = await axios.get(`${url}?page=${currentPage}&pageSize=10`);
+      const results = await axios.get(`${url}?page=1&pageSize=10`);
       const newData = results.data;
-      setData((prevData) => [...prevData, ...newData]);
+      setData(newData);
       setLoadingStatus(LOADING_STATES[2]);
     } catch (e) {
       setError(e);
@@ -41,7 +42,7 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     async function getDataUseEffect(callbackDone) {
       try {
         setLoadingStatus(LOADING_STATES[0]);
-        const results = await axios.get(`${url}?page=${currentPage}&pageSize=10`);
+        const results = await axios.get(`${url}?page=1&pageSize=10`);
         setData(results.data);
         setLoadingStatus(LOADING_STATES[2]);
       } catch (e) {
@@ -170,6 +171,26 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     // console.log("2");
   }
 
+  async function fetchNextPage(nextPage) {
+    if (isLoading) {
+      // If a request is already in progress, do nothing
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const results = await axios.get(`/api/todo?page=${nextPage}&pageSize=10`);
+      const newData = results.data;
+
+      if (newData && newData.length > 0) {
+        setData((prevData) => [...prevData, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error loading more data:", error);
+    } finally {
+      setIsLoading(false); // Set isLoading to false when the request is done
+    }
+  }
+
   return {
     data, // returned data after loadingStatus === "success"
     loadingStatus, // "success", "errored", "loading"
@@ -178,6 +199,7 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     createRecord, // creates new record at end, takes first record as parameter, second as callback function when done
     updateRecord, // update new record at end, takes single record as parameter, second as callback function when done
     deleteRecord, // takes primary key named "id"
+    fetchNextPage
   };
 };
 

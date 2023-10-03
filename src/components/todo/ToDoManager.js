@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ToDosDataContext } from "../../contexts/ToDosDataContext";
 import ToDoList from "./ToDoList";
 import CourseForm from "./CourseForm";
+import debounce from "lodash/debounce";
 
 const ToDoManager = ({
   displayStatus,
@@ -9,7 +10,7 @@ const ToDoManager = ({
   searchText,
   darkTheme,
 }) => {
-  const { todoList, updateTodo, createTodo, deleteTodo } =
+  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo } =
     useContext(ToDosDataContext);
 
   const [todoRecord, setTodoRecord] = useState({
@@ -20,7 +21,9 @@ const ToDoManager = ({
   });
   const [idUpdating, setIdUpdating] = useState(0);
   const [addOrEdit, setAddOrEdit] = useState("add"); // "add" or "edit"
-  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPage, setNextPage] = useState(2);
+  const [isLoading, setIsLoading] = useState(false);
+  const [reachedBottom, setReachedBottom] = useState(false);
 
   const handleToggle = (id) => {
     const rec = todoList.find((rec) => rec.id === id);
@@ -74,7 +77,55 @@ const ToDoManager = ({
     });
   };
 
-  if (!todoList) {
+// Function to load more data when scrolling to the bottom
+const loadMoreData = async () => {
+  if (isLoading) {
+    return;
+  }
+  setIsLoading(true);
+  try {
+    await fetchNextTodo(nextPage);
+    setNextPage(nextPage + 1);
+  } catch (error) {
+    console.error("Error loading more data:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// Function to handle scroll event and check if the user reached the bottom
+const handleScroll = debounce(() => {
+  const scrollY = window.scrollY || window.pageYOffset;
+  const windowHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+
+  // Check if the user has scrolled to the bottom of the page
+  if (scrollY + windowHeight >= documentHeight - 200) {
+    setReachedBottom(true);
+  } else {
+    setReachedBottom(false);
+  }
+}, 200); // Adjust the debounce delay as needed
+
+// Attach scroll event listener to window only when todoList is not empty
+useEffect(() => {
+  if (todoList && todoList.length > 0) {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }
+}, [todoList]); // Only add/remove listener when todoList changes
+
+// Load more data when the user reaches the bottom
+useEffect(() => {
+  if (reachedBottom) {
+    loadMoreData();
+  }
+}, [reachedBottom]);
+
+
+if (!todoList) {
     return <div className="loading-state-canvas">Loading...</div>;
   }
 
