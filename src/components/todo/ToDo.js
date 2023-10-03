@@ -21,7 +21,7 @@ const ToDo = ({
       >
 
         <span className="badge">
-          { todoItem.platform === 1 ? (
+          { todoItem.platform == 1 ? (
               <Image src="/udemy-logo.png" alt="udemy-logo" width={100} height={40} className="platform-logo"/> 
             ) : (
               <Image src="/pluralsight-logo.jpg" alt="pluralsight-logo" width={100} height={40} className="platform-logo"/> 
