@@ -5,7 +5,7 @@ import ToDoManager from "./components/todo/ToDoManager";
 import Layout from "./components/layout/Layout";
 
 const App = () => {
-  const [displayStatus, setDisplayStatus] = useState("all"); // all, pending, completed
+  const [displayStatus, setDisplayStatus] = useState("all"); // all, udemy, pluralsight
   const [important, setImportant] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [darkTheme, setDarkTheme] = useState(false);

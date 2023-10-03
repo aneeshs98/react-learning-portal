@@ -7,7 +7,7 @@ const useTodosData = () => {
   };
 
   const {
-    data, error, loadingStatus, createRecord, updateRecord, deleteRecord, reFetch, fetchNextPage
+    data, error, loadingStatus, createRecord, updateRecord, deleteRecord, reFetch, fetchNextPage, applyPlatformFilter
   } = useGeneralizedCrudMethods(url, errorNotificationFn);
 
   function createTodo(rec, callbackDone) {
@@ -26,8 +26,12 @@ const useTodosData = () => {
     await fetchNextPage(nextPage);
   }
 
+  async function applyPlatformTodo(platform) {
+    await applyPlatformFilter(platform);
+  }
+
   return {
-    todoList: data, loadingStatus, error, createTodo, updateTodo, deleteTodo, reFetch, fetchNextTodo
+    todoList: data, loadingStatus, error, createTodo, updateTodo, deleteTodo, reFetch, fetchNextTodo, applyPlatformTodo
   };
 };
 

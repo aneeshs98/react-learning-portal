@@ -10,7 +10,7 @@ const ToDoManager = ({
   searchText,
   darkTheme,
 }) => {
-  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo } =
+  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo, applyPlatformTodo } =
     useContext(ToDosDataContext);
 
   const [todoRecord, setTodoRecord] = useState({

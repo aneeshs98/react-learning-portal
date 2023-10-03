@@ -1,4 +1,6 @@
 import React from "react";
+import { useState, useContext } from "react";
+import { ToDosDataContext } from "../../contexts/ToDosDataContext";
 
 const ToDoFilterToolbar = ({
   displayStatus,
@@ -8,6 +10,37 @@ const ToDoFilterToolbar = ({
   searchText,
   setSearchText,
 }) => {
+
+  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo, applyPlatformTodo } =
+    useContext(ToDosDataContext);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Function to load more data when scrolling to the bottom
+  const loadPlatformFilter = async (newDisplayStatus) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      let platform;
+      if (newDisplayStatus === "all") {
+        platform = 0;
+      } else if (newDisplayStatus === "udemy") {
+        platform = 1;
+      } else if (newDisplayStatus === "pluralsight") {
+        platform = 2;
+      }
+      await applyPlatformTodo(platform);
+    } catch (error) {
+      console.error("Error loading more data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onDisplayStatusChange = (newDisplayStatus) => {
+    loadPlatformFilter(newDisplayStatus);
+  };
   return (
     <nav className="navbar navbar-expand">
       <div className="container-fluid">
@@ -31,7 +64,10 @@ const ToDoFilterToolbar = ({
                     ? "nav-link active"
                     : "nav-link"
                 }
-                onClick={() => setDisplayStatus("all")}
+                onClick={() =>{ 
+                  setDisplayStatus("all");
+                  onDisplayStatusChange("all");
+                }}
                 href="#"
               >
                 All
@@ -40,11 +76,14 @@ const ToDoFilterToolbar = ({
             <li className="nav-item">
               <a
                 className={
-                  displayStatus === "pending"
+                  displayStatus === "udemy"
                     ? "nav-link active"
                     : "nav-link"
                 }
-                onClick={() => setDisplayStatus("pending")}
+                onClick={() => { 
+                  setDisplayStatus("udemy");
+                  onDisplayStatusChange("udemy");
+                }}
                 href="#"
               >
                 Udemy
@@ -53,11 +92,14 @@ const ToDoFilterToolbar = ({
             <li className="nav-item">
               <a
                 className={
-                  displayStatus === "completed"
+                  displayStatus === "pluralsight"
                     ? "nav-link active"
                     : "nav-link"
                 }
-                onClick={() => setDisplayStatus("completed")}
+                onClick={() => {
+                  setDisplayStatus("pluralsight");
+                  onDisplayStatusChange("pluralsight");
+                }}
                 href="#"
               >
                 Pluralsight

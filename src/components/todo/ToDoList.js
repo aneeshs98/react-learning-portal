@@ -14,17 +14,6 @@ const ToDoList = ({
     <div className="tasks">
       {toDoList
         .filter((todo) => {
-          if (displayStatus === "all") {
-            return true;
-          } else if (displayStatus === "pending") {
-            return todo.platform == 1;
-          } else if (displayStatus === "completed") {
-            return todo.platform == 2;
-          } else {
-            return false; // should not be needed
-          }
-        })
-        .filter((todo) => {
           if (important === true) {
             return todo.important === true;
           } else {

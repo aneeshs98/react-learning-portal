@@ -7,7 +7,6 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
   const [data, setData] = useState();
   const [error, setError] = useState();
   const [loadingStatus, setLoadingStatus] = useState("loading");
-  const [isLoading, setIsLoading] = useState(false);
 
   if (!url || url.length === 0) {
     throw new Error(
@@ -172,11 +171,11 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
   }
 
   async function fetchNextPage(nextPage) {
-    if (isLoading) {
+    if (loadingStatus === "loading") {
       // If a request is already in progress, do nothing
       return;
     }
-    setIsLoading(true);
+    setLoadingStatus(LOADING_STATES[0]);
     try {
       const results = await axios.get(`/api/todo?page=${nextPage}&pageSize=10`);
       const newData = results.data;
@@ -186,8 +185,22 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
       }
     } catch (error) {
       console.error("Error loading more data:", error);
+      setLoadingStatus(LOADING_STATES[1]);
     } finally {
-      setIsLoading(false); // Set isLoading to false when the request is done
+      setLoadingStatus(LOADING_STATES[2]); // Set isLoading to false when the request is done
+    }
+  }
+
+  async function applyPlatformFilter(platform) {
+    try {
+      setLoadingStatus(LOADING_STATES[0]);
+      const results = await axios.get(`${url}?page=1&pageSize=10&platform=${platform}`);
+      const newData = results.data;
+      setData(newData);
+      setLoadingStatus(LOADING_STATES[2]);
+    } catch (e) {
+      setError(e);
+      setLoadingStatus(LOADING_STATES[1]);
     }
   }
 
@@ -199,7 +212,8 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     createRecord, // creates new record at end, takes first record as parameter, second as callback function when done
     updateRecord, // update new record at end, takes single record as parameter, second as callback function when done
     deleteRecord, // takes primary key named "id"
-    fetchNextPage
+    fetchNextPage,
+    applyPlatformFilter
   };
 };
 
