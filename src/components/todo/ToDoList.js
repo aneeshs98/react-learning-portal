@@ -13,22 +13,6 @@ const ToDoList = ({
   return (
     <div className="tasks">
       {toDoList
-        .filter((todo) => {
-          if (important === true) {
-            return todo.important === true;
-          } else {
-            return true;
-          }
-        })
-        .filter((todo) => {
-          if (searchText?.length > 0) {
-            return todo.courseName
-              .toLocaleLowerCase()
-              .includes(searchText.toLocaleLowerCase());
-          } else {
-            return true;
-          }
-        })
         .map((todo) => {
           return (
             <ToDo

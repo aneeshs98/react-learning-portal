@@ -170,14 +170,14 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     // console.log("2");
   }
 
-  async function fetchNextPage(nextPage) {
+  async function fetchNextPage(nextPage, platform, searchText) {
     if (loadingStatus === "loading") {
       // If a request is already in progress, do nothing
       return;
     }
     setLoadingStatus(LOADING_STATES[0]);
     try {
-      const results = await axios.get(`/api/todo?page=${nextPage}&pageSize=10`);
+      const results = await axios.get(`/api/todo?page=${nextPage}&pageSize=10&platform=${platform}&searchText=${searchText}`);
       const newData = results.data;
 
       if (newData && newData.length > 0) {
@@ -191,10 +191,23 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     }
   }
 
-  async function applyPlatformFilter(platform) {
+  async function applyPlatformFilter(platform, searchText) {
     try {
       setLoadingStatus(LOADING_STATES[0]);
-      const results = await axios.get(`${url}?page=1&pageSize=10&platform=${platform}`);
+      const results = await axios.get(`${url}?page=1&pageSize=10&platform=${platform}&searchText=${searchText}`);
+      const newData = results.data;
+      setData(newData);
+      setLoadingStatus(LOADING_STATES[2]);
+    } catch (e) {
+      setError(e);
+      setLoadingStatus(LOADING_STATES[1]);
+    }
+  }
+
+  async function applySearchTextFilter(newSearchText, platform) {
+    try {
+      setLoadingStatus(LOADING_STATES[0]);
+      const results = await axios.get(`${url}?page=1&pageSize=10&platform=${platform}&searchText=${newSearchText}`);
       const newData = results.data;
       setData(newData);
       setLoadingStatus(LOADING_STATES[2]);
@@ -213,7 +226,8 @@ const useGeneralizedCrudMethods = (url, errorNotificationFn) => {
     updateRecord, // update new record at end, takes single record as parameter, second as callback function when done
     deleteRecord, // takes primary key named "id"
     fetchNextPage,
-    applyPlatformFilter
+    applyPlatformFilter,
+    applySearchTextFilter
   };
 };
 

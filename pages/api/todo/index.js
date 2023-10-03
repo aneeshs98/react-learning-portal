@@ -10,7 +10,7 @@ const delay = (ms) =>
 
 export default async function handler(req, res) {
   const jsonFile = path.resolve("./", "db.json");
-  const { page = 1, pageSize = 10, platform = 0 } = req.query; 
+  const { page = 1, pageSize = 10, platform = 0, searchText = "" } = req.query; 
   try {
     const readFileData = await readFile(jsonFile);
     await delay(delayTime);
@@ -20,12 +20,17 @@ export default async function handler(req, res) {
         .status(404)
         .send("Error: Request failed with status code 404");
     } else {
-      //res.status(200).json(todo); keeps json minified but harder to read
-      //res.setHeader("Content-Type", "application/json");
+      // Filter by platform
       let filteredTodos = todos;
       if (platform != 0) {
         filteredTodos = todos.filter((todo) =>
           todo.platform == platform
+        );
+      }
+      // Filter by searchText (courseName)
+      if (searchText) {
+        filteredTodos = filteredTodos.filter((todo) =>
+          todo.courseName.toLowerCase().includes(searchText.toLowerCase())
         );
       }
       const startIndex = (page - 1) * pageSize;

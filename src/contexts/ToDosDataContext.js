@@ -8,16 +8,17 @@ export const ToDosDataContext = createContext({
   deleteTodo: () => {},
   fetchNextTodo: () => {},
   loadingStatus: "",
-  applyPlatformTodo: () => {}
+  applyPlatformTodo: () => {},
+  applySearchTextTodo: () => {}
 });
 
 export const TodosDataProvider = ({ children }) => {
   const {
-    todoList, createTodo, updateTodo, deleteTodo, loadingStatus, isPending, reFetch, fetchNextTodo, applyPlatformTodo
+    todoList, createTodo, updateTodo, deleteTodo, loadingStatus, isPending, reFetch, fetchNextTodo, applyPlatformTodo, applySearchTextTodo
   } = useTodosData();
 
   const value = {
-    todoList, createTodo, updateTodo, deleteTodo, loadingStatus, isPending, reFetch, fetchNextTodo, applyPlatformTodo
+    todoList, createTodo, updateTodo, deleteTodo, loadingStatus, isPending, reFetch, fetchNextTodo, applyPlatformTodo, applySearchTextTodo
   };
 
   return (

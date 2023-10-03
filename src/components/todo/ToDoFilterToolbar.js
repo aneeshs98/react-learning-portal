@@ -11,7 +11,7 @@ const ToDoFilterToolbar = ({
   setSearchText,
 }) => {
 
-  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo, applyPlatformTodo } =
+  const { applyPlatformTodo, applySearchTextTodo } =
     useContext(ToDosDataContext);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,7 +30,29 @@ const ToDoFilterToolbar = ({
       } else if (newDisplayStatus === "pluralsight") {
         platform = 2;
       }
-      await applyPlatformTodo(platform);
+      await applyPlatformTodo(platform, searchText);
+    } catch (error) {
+      console.error("Error loading more data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadSearchTextFilter = async (newSearchText) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      let platform;
+      if (displayStatus === "all") {
+        platform = 0;
+      } else if (displayStatus === "udemy") {
+        platform = 1;
+      } else if (displayStatus === "pluralsight") {
+        platform = 2;
+      }
+      await applySearchTextTodo(newSearchText, platform);
     } catch (error) {
       console.error("Error loading more data:", error);
     } finally {
@@ -41,6 +63,11 @@ const ToDoFilterToolbar = ({
   const onDisplayStatusChange = (newDisplayStatus) => {
     loadPlatformFilter(newDisplayStatus);
   };
+
+  const onSearchTextChange = (newSearchText) => {
+    loadSearchTextFilter(newSearchText)
+  };
+
   return (
     <nav className="navbar navbar-expand">
       <div className="container-fluid">
@@ -51,6 +78,7 @@ const ToDoFilterToolbar = ({
                 value={searchText}
                 onChange={(event) => {
                   setSearchText(event.target.value);
+                  onSearchTextChange(event.target.value);
                 }}
                 type="text"
                 className="form-search-text"

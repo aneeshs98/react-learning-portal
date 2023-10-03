@@ -10,7 +10,7 @@ const ToDoManager = ({
   searchText,
   darkTheme,
 }) => {
-  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo, applyPlatformTodo } =
+  const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo } =
     useContext(ToDosDataContext);
 
   const [todoRecord, setTodoRecord] = useState({
@@ -27,14 +27,9 @@ const ToDoManager = ({
 
   const handleToggle = (id) => {
     const rec = todoList.find((rec) => rec.id === id);
-    // const recUpdated = {
-    //   ...rec,
-    //   completed: !rec.completed,
-    // };
-    // setIdUpdating(rec.id);
-    // updateTodo(recUpdated, () => {
-    //   setIdUpdating(0);
-    // });
+    if (rec && rec.courseUrl) {
+      window.open(rec.courseUrl, '_blank');
+    }
   };
 
   const handleDelete = (id) => {
@@ -84,7 +79,15 @@ const loadMoreData = async () => {
   }
   setIsLoading(true);
   try {
-    await fetchNextTodo(nextPage);
+    let platform;
+    if (displayStatus === "all") {
+      platform = 0;
+    } else if (displayStatus === "udemy") {
+      platform = 1;
+    } else if (displayStatus === "pluralsight") {
+      platform = 2;
+    }
+    await fetchNextTodo(nextPage, platform, searchText);
     setNextPage(nextPage + 1);
   } catch (error) {
     console.error("Error loading more data:", error);
