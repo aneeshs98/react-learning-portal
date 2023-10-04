@@ -6,21 +6,22 @@ import Layout from "./components/layout/Layout";
 
 const App = () => {
   const [displayStatus, setDisplayStatus] = useState("all"); // all, udemy, pluralsight
-  const [important, setImportant] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [darkTheme, setDarkTheme] = useState(false);
+  const [nextPage, setNextPage] = useState(2);
   const toggleTheme = () => setDarkTheme(!darkTheme);
   return (
     <TodosDataProvider>
       <Layout toggleTheme={toggleTheme} darkTheme={darkTheme}>
         <ToDoListWithToolbar
           displayStatus={displayStatus} setDisplayStatus={setDisplayStatus}
-          import={important} setImportant={setImportant}
           searchText={searchText} setSearchText={setSearchText}
+          setNextPage={setNextPage}
         >
           <ToDoManager
-            displayStatus={displayStatus} important={important}
+            displayStatus={displayStatus}
             searchText={searchText} darkTheme={darkTheme}
+            nextPage={nextPage} setNextPage={setNextPage}
           />
         </ToDoListWithToolbar>
       </Layout>

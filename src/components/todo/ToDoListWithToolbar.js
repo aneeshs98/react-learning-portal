@@ -4,20 +4,18 @@ import ToDoFilterToolbar from "./ToDoFilterToolbar";
 const ToDoListWithToolbar = ({
   displayStatus,
   setDisplayStatus,
-  important,
-  setImportant,
   searchText,
   setSearchText,
+  setNextPage,
   children,
 }) => (
   <div>
     <ToDoFilterToolbar
       displayStatus={displayStatus}
       setDisplayStatus={setDisplayStatus}
-      import={important}
-      setImportant={setImportant}
       searchText={searchText}
       setSearchText={setSearchText}
+      setNextPage={setNextPage}
     />
     {children}
   </div>

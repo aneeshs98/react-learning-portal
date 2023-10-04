@@ -6,9 +6,10 @@ import debounce from "lodash/debounce";
 
 const ToDoManager = ({
   displayStatus,
-  important,
   searchText,
   darkTheme,
+  nextPage,
+  setNextPage
 }) => {
   const { todoList, updateTodo, createTodo, deleteTodo, fetchNextTodo } =
     useContext(ToDosDataContext);
@@ -21,7 +22,7 @@ const ToDoManager = ({
   });
   const [idUpdating, setIdUpdating] = useState(0);
   const [addOrEdit, setAddOrEdit] = useState("add"); // "add" or "edit"
-  const [nextPage, setNextPage] = useState(2);
+  //const [nextPage, setNextPage] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
   const [reachedBottom, setReachedBottom] = useState(false);
 
@@ -142,7 +143,7 @@ if (!todoList) {
       </div>
 
       <ToDoList
-        displayStatus={displayStatus} important={important} searchText={searchText}
+        displayStatus={displayStatus} searchText={searchText}
         toDoList={todoList} handleToggle={handleToggle} handleDelete={handleDelete}
         handleEdit={handleEdit} idUpdating={idUpdating} darkTheme={darkTheme}
       />

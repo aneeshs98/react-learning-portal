@@ -5,10 +5,9 @@ import { ToDosDataContext } from "../../contexts/ToDosDataContext";
 const ToDoFilterToolbar = ({
   displayStatus,
   setDisplayStatus,
-  important,
-  setImportant,
   searchText,
   setSearchText,
+  setNextPage
 }) => {
 
   const { applyPlatformTodo, applySearchTextTodo } =
@@ -34,6 +33,7 @@ const ToDoFilterToolbar = ({
     } catch (error) {
       console.error("Error loading more data:", error);
     } finally {
+      setNextPage(2);
       setIsLoading(false);
     }
   };
@@ -56,6 +56,7 @@ const ToDoFilterToolbar = ({
     } catch (error) {
       console.error("Error loading more data:", error);
     } finally {
+      setNextPage(2);
       setIsLoading(false);
     }
   };

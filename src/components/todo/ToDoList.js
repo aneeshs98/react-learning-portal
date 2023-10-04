@@ -3,8 +3,6 @@ import ToDo from "./ToDo";
 const ToDoList = ({
   displayStatus,
   toDoList,
-  important,
-  searchText,
   handleToggle,
   handleDelete,
   handleEdit,
